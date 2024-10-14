@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Aura-Profil</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="number"] {
+            width: 60px;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interaktives Aura-Profil</h1>
+
+    <!-- Eingabefelder für Namen -->
+    <div class="form-group">
+        <label for="name1">Name Person 1:</label>
+        <input type="text" id="name1" value="Max Mustermann">
+    </div>
+    <div class="form-group">
+        <label for="name2">Name Person 2:</label>
+        <input type="text" id="name2" value="Erika Beispiel">
+    </div>
+
+    <!-- Kriterien und Gewichtungen für Person 1 -->
+    <h3>Kriterien und Gewichtungen für Person 1</h3>
+    <div class="form-group">
+        <label for="criteria1_1">Weisheit:</label>
+        <input type="number" id="criteria1_1" value="40">
+    </div>
+    <div class="form-group">
+        <label for="criteria1_2">Kreativität:</label>
+        <input type="number" id="criteria1_2" value="25">
+    </div>
+    <div class="form-group">
+        <label for="criteria1_3">Emotionale Intelligenz:</label>
+        <input type="number" id="criteria1_3" value="35">
+    </div>
+    <div class="form-group">
+        <label for="criteria1_4">Gelassenheit:</label>
+        <input type="number" id="criteria1_4" value="18">
+    </div>
+    <div class="form-group">
+        <label for="criteria1_5">Charisma:</label>
+        <input type="number" id="criteria1_5" value="30">
+    </div>
+    <div class="form-group">
+        <label for="criteria1_6">Spirituelle Verbundenheit:</label>
+        <input type="number" id="criteria1_6" value="20">
+    </div>
+
+    <button onclick="generateChart()">Profil aktualisieren</button>
+
+    <!-- Bereich für das Radar-Diagramm -->
+    <canvas id="auraChart" width="400" height="400"></canvas>
+
+    <script>
+        // Funktion zum Erstellen des Radar-Diagramms
+        function generateChart() {
+            const name1 = document.getElementById("name1").value;
+            const name2 = document.getElementById("name2").value;
+
+            // Kriterien für Person 1
+            const scores1 = [
+                parseInt(document.getElementById("criteria1_1").value),
+                parseInt(document.getElementById("criteria1_2").value),
+                parseInt(document.getElementById("criteria1_3").value),
+                parseInt(document.getElementById("criteria1_4").value),
+                parseInt(document.getElementById("criteria1_5").value),
+                parseInt(document.getElementById("criteria1_6").value)
+            ];
+
+            const maxScores = [50, 30, 40, 20, 40, 25]; // Maximale Werte für die Kriterien
+
+            const labels = ['Weisheit', 'Kreativität', 'Emotionale Intelligenz', 'Gelassenheit', 'Charisma', 'Spirituelle Verbundenheit'];
+
+            // Normalisieren der Werte für Person 1
+            const normalizedScores1 = scores1.map((score, index) => score / maxScores[index]);
+
+            // Chart.js Radar Chart erstellen
+            const ctx = document.getElementById('auraChart').getContext('2d');
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: name1,
+                    data: normalizedScores1,
+                    fill: true,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(54, 162, 235, 1)'
+                }]
+            };
+
+            const options = {
+                scale: {
+                    ticks: { beginAtZero: true, min: 0, max: 1 },
+                    pointLabels: { fontSize: 14 }
+                }
+            };
+
+            // Lösche bestehendes Chart und erstelle ein neues
+            if (window.auraChart instanceof Chart) {
+                window.auraChart.destroy();
+            }
+
+            window.auraChart = new Chart(ctx, {
+                type: 'radar',
+                data: data,
+                options: options
+            });
+        }
+
+        // Erstelle das Chart beim ersten Laden
+        window.onload = generateChart;
+    </script>
+</body>
+</html>
